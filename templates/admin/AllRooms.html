@@ -1,214 +1,395 @@
-{%extends 'admin/AdminAllinclude.html'%}
+{% extends 'admin/AdminAllinclude.html' %}
 {% block title %}
- All Rooms page
+All Rooms page
 {% endblock %}
-  {% block  pagecontant %}
-  {% load static %}
-         <!-- page content -->
-      <!--************************************
-			Table part start
-		*************************************-->
+{% block pagecontant %}
+{% load static %}
+{% load room_tags %}
 
-    <div class="right_col" role="main">
-        <div class="row">
-            <div class ="col-lg-12" style="background:gray;">
+<style>
+.allrooms-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0 16px;
+    padding: 10px 14px;
+    background: #f0f0f0;
+    border-radius: 6px;
+}
 
-                 <div class ="col-lg-6">
-                     <div class="add_student">
-                        <h2 >All Rooms</h2>
-                     </div>
-                 </div>
-                <div class ="col-lg-6">
-                    <div class="add_student_link">
-                        <a href="{% url 'Adminpage' %}">Home</a> <i class="fas fa-angle-right"></i> <a href="{% url 'Add_room' %}">Add Rooms</a>
-                     </div>
-                 </div>
+@media (max-width: 992px) {
+    .allrooms-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.allrooms-toolbar__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.allrooms-toolbar__item label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}
+
+.allrooms-toolbar__item input[type="number"],
+.allrooms-toolbar__item input[type="search"] {
+    width: 100%;
+    height: 36px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.allrooms-toolbar__btn {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: #1976d2;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.allrooms-toolbar__btn:hover {
+    background: #1565c0;
+}
+
+.allrooms-toolbar__btn--secondary {
+    background: #43a047;
+}
+
+.allrooms-toolbar__btn--secondary:hover {
+    background: #388e3c;
+}
+
+.allrooms-table-wrap {
+    overflow-x: auto;
+    background: #1a1a1a;
+    border-radius: 6px;
+    padding: 4px;
+}
+
+.allrooms-table {
+    width: 100%;
+    margin: 0;
+    font-size: 12px;
+    text-align: center;
+    border-collapse: collapse;
+    color: #eee;
+}
+
+.allrooms-table th {
+    background: #c62828;
+    color: #fff;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.allrooms-table td {
+    padding: 5px 8px;
+    vertical-align: middle;
+    border-color: #333;
+}
+
+.allrooms-table tr:nth-child(even) {
+    background: #252525;
+}
+
+.allrooms-table tr:nth-child(odd) {
+    background: #1e1e1e;
+}
+
+.allrooms-table .facility-cell {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.allrooms-table img {
+    width: 48px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+.allrooms-table .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+}
+
+.allrooms-table .action {
+    white-space: nowrap;
+}
+
+.allrooms-table .action a {
+    display: inline-block;
+    padding: 2px 8px;
+    margin: 0 2px;
+    font-size: 11px;
+    color: #fff;
+    background: #555;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+.allrooms-table .action a:hover {
+    background: #c62828;
+}
+
+.allrooms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 12px 0 10px;
+    padding: 0 4px;
+}
+
+.allrooms-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ac3d19;
+}
+
+.allrooms-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0 !important;
+    padding: 8px 18px !important;
+    width: auto !important;
+    height: 36px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.2;
+    color: #fff !important;
+    background: #e53935 !important;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.allrooms-add-btn:hover {
+    background: #c62828 !important;
+    color: #fff !important;
+}
+</style>
+
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-lg-12" style="background:gray;">
+            <div class="col-lg-6">
+                <div class="add_student">
+                    <h2>Danh Sách Phòng</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="add_student_link">
+                    <a href="{% url 'Adminpage' %}">Trang Chủ</a>
+                    <i class="fas fa-angle-right"></i>
+                    <a href="{% url 'Add_room' %}">Danh Sách Phòng</a>
+                </div>
             </div>
         </div>
-          <div class="row" style="margin-top:10px;">
-              <div class="col-lg-12">
-                  <div class="table_menu">
-                      <!-- Nav tabs -->
-                        <ul class="nav nav-tabs" role="tablist">
-                          <li class="active"><a href="#List_View" role="tab" data-toggle="tab">List View</a></li>
-                          <li ><a href="#Grid_view" role="tab" data-toggle="tab">Grid view</a></li>
-                        </ul>
-                        <!-- Tab panes -->
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="List_View">
-                              <div class="col-lg-12">
-                                  <div class="table_tilte">
-                                      <h4>All Rooms list</h4>
-                                      <a href="{% url 'Add_room' %}"><i class="fas fa-plus"></i> Add New</a>
-                                  </div>
-                              </div>
-                              <div class="col-lg-12">
-                                  <div class="table_info11">
-                                      <form action="All_Room" method="post" enctype="multipart/form-data">
-                                          {% csrf_token %}
-                                          <div class="form-group table_info_btn">
-                                               <label class="form-label">Show</label>
-                                               <select class="form-control">
-                                                   <option value="Class">15</option>
-                                                   <option value="html">25</option>
-                                                   <option value="css">50</option>
-                                                   <option value="javascript">75</option>
-                                                   <option value="angular">100</option>
-                                               </select>
-                                            </div>
-                                          <div class="form-group table_info_btn1" >
-                                               <select class="form-control" name="Room_Type">
-                                                     <option value="Select Room">Select Room</option>
-                                                     <option value=" Delux">Delux</option>
-                                                     <option value=" Super Delux">Super Delux</option>
-                                                     <option value=" Single">Single</option>
-                                                     <option value=" Double">Double</option>
-                                               </select>
-                                        </div>
-                                          <div class="table_info_btn2">
-                                             <div class="form-group">
-                                               <input type="search" name="search" class="form-control" placeholder="" required>
-                                           </div>
-                                         </div>
-                                        <div class="table_info_btn3">
-                                            <div class="form_btn2">
-                                               <button type="submit">Search</button>
-                                            </div>
-                                            <div class="form_btn2">
-                                              <button type="submit">Show All</button>
-                                           </div>
-                                         </div>
-                                      </form>
-                                  </div>
-                              </div>
-                              <div class="col-lg-12 form_table1" >
-                                      <div id="example" class="example table-wrapper-scroll-y my-custom-scrollbar">
-                                        <table  class="table-bordered table-striped">
-                                              <tr>
-                                                  <th>Room Number</th>
-                                                  <th>Room Type</th>
-                                                <th>Room Floor</th>
-                                                <th>Room Facility</th>
-                                                <th>Room Price</th>
-                                                <th>Room Image</th>
-                                                   <th>Date</th>
-                                                   <th>Time</th>
-                                                   <th>Action</th>
-                                               </tr>
-
-                                            {%if data %}
-
-                                        {% for i in data %}
-                                         <tr>
-                                              <td>{{i.Room_Number}}</td>
-                                              <td>{{i.Room_Type}}</td>
-                                              <td>{{i.Room_Floor}}</td>
-                                              <td>{{i.Room_Facility}}</td>
-                                              <td>{{i.Room_Price}}</td>
-                                              <td>{{i.Room_Image}}</td>
-                                              <td>{{i.Date}}</td>
-                                              <td>{{i.Time}}</td>
-                                              <td class="action">
-                                                       <a  href="{% url 'AllRooms_Delete' id=i.Id%}">Delete</a>
-                                                       <a  href="{% url 'EditRooms' id=i.Id%}">Update</a>
-                                              </td>
-                                        </tr>
-                                        {%endfor%}
-
-                                        {% endif %}
-                                        </table>
-                                    </div>
-                              </div>
-                          </div>
-                          <div class="tab-pane" id="Grid_view">
-                               <div class="col-lg-12">
-                                  <div class="table_info11">
-                                      <form method="post" action="All_Room">
-                                          {% csrf_token %}
-                                          <div class="form-group table_info_btn">
-                                               <label class="form-label">Show</label>
-                                               <select class="form-control" name="">
-                                                   <option value="Class">15</option>
-                                                   <option value="html">25</option>
-                                                   <option value="css">50</option>
-                                                   <option value="javascript">75</option>
-                                                   <option value="angular">100</option>
-                                               </select>
-                                            </div>
-                                          <div class="form-group table_info_btn1" >
-                                               <select class="form-control" name="Room_Type">
-                                                 <option value="Select Room">Select Room</option>
-                                                 <option value=" Delux">Delux</option>
-                                                 <option value=" Super Delux">Super Delux</option>
-                                                 <option value=" Single">Single</option>
-                                                 <option value=" Double">Double</option>
-                                               </select>
-                                        </div>
-                                          <div class="table_info_btn2">
-                                             <div class="form-group">
-                                               <input type="search" name="search" class="form-control" placeholder="" required>
-                                           </div>
-                                         </div>
-                                        <div class="table_info_btn3">
-                                            <div class="form_btn2">
-                                               <button type="submit">Search</button>
-                                            </div>
-                                            <div class="form_btn2">
-                                              <button type="submit">Show All</button>
-                                           </div>
-                                         </div>
-                                      </form>
-                                  </div>
-                              </div>
-                              <div class="col-lg-12 table-wrapper-scroll-y my-custom-scrollbar Grid_view_pic">
-                                    {%if data %}
-
-                                    {% for i in data %}
-                                     <div class="col-lg-4 Grid_view_pic_info" >
-                                          <div class="Grid_view_top">
-                                              <p> <span class="hover_icon"><i class="fas fa-ellipsis-h"></i></span>
-                                                <div class="del_Edit">
-                                                   <a href="{% url 'EditRooms' id=i.Id%}"><i class="fas fa-user-edit"></i></a>
-                                                   <a href="{% url 'AllRooms_Delete' id=i.Id%}"><i class="fas fa-trash-alt"></i></a>
-                                                </div>
-                                              </p>
-                                                {%if i.Room_Image %}
-                                               <img src="{{i.Room_Image.url}}" alt="img">
-                                               {% endif %}
-                                              <h4>{{i.Room_Type}}</h4>
-                                              <h6>{{i.Room_Number}}</h6>
-                                          </div>
-                                           <div class="Grid_view_botton">
-                                                    <div class="Grid_view_botton_info">
-                                                        <h5>Room Floor:</h5>
-                                                        <p>{{i.Room_Floor}}</p>
-                                                    </div>
-                                                      <div class="Grid_view_botton_info">
-                                                          <h5>Room Price:</h5>
-                                                          <p>{{i.Room_Price}}</p>
-                                                      </div>
-                                                      <div class="Grid_view_botton_info">
-                                                          <h5>Date:</h5>
-                                                          <p>{{i.Date}}</p>
-                                                      </div>
-                                                     <div class="Grid_view_botton_info">
-                                                         <h5>Room Facility:</h5>
-                                                         <p>{{i.Room_Facility}}</p>
-                                                     </div>
-                                           </div>
-                                  </div>
-                                      {%endfor%}
-
-                                  {% endif %}
-                                  <div class="col-lg-4">
-
-
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
-                  </div>
-              </div>
-          </div>
     </div>
-  {% endblock %}
+
+    <div class="row" style="margin-top:10px;">
+        <div class="col-lg-12">
+            <div class="table_menu">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active"><a href="#List_View" role="tab" data-toggle="tab">Hiển thị dạng danh sách</a></li>
+                    <li><a href="#Grid_view" role="tab" data-toggle="tab">Hiển thị dạng lưới</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="List_View">
+                        <div class="col-lg-12">
+                            <div class="allrooms-header">
+                                <h4>Danh sách tất cả phòng</h4>
+                                <a href="{% url 'Add_room' %}" class="allrooms-add-btn">
+                                    <i class="fas fa-plus"></i> Thêm mới
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <form method="post" action="{% url 'All_Room' %}">
+                                {% csrf_token %}
+                                <div class="allrooms-toolbar">
+                                    <div class="allrooms-toolbar__item">
+                                        <label for="display_count_list">Hiển thị</label>
+                                        <input type="number" id="display_count_list" name="display_count"
+                                            min="1" max="500" placeholder="Tất cả"
+                                            value="{{ display_count|default:'' }}">
+                                    </div>
+                                    <div class="allrooms-toolbar__item">
+                                        <input type="search" id="search_list" name="search"
+                                            placeholder="Số phòng, loại, tầng..."
+                                            value="{{ search|default:'' }}">
+                                    </div>
+                                    <button type="submit" name="action" value="search"
+                                        class="allrooms-toolbar__btn">Tìm kiếm</button>
+                                    <button type="submit" name="action" value="all" formnovalidate
+                                        class="allrooms-toolbar__btn allrooms-toolbar__btn--secondary">Hiển thị tất cả</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="allrooms-table-wrap table-wrapper-scroll-y my-custom-scrollbar">
+                                <table class="table-bordered table-striped allrooms-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Số Phòng</th>
+                                            <th>Loại</th>
+                                            <th>Tầng</th>
+                                            <th>Tiện nghi</th>
+                                            <th>Giá</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ảnh</th>
+                                            <th>Ngày</th>
+                                            <th>Giờ</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if data %}
+                                        {% for i in data %}
+                                        <tr>
+                                            <td>{{ i.Room_Number }}</td>
+                                            <td>{{ i.Room_Type|room_type_vi }}</td>
+                                            <td>{{ i.Room_Floor|room_floor_vi }}</td>
+                                            <td class="facility-cell" title="{{ i.Room_Facility }}">{{ i.Room_Facility }}</td>
+                                            <td>{{ i.Room_Price }}</td>
+                                            <td>
+                                                {% if i.Room_Status == 'Trống' %}
+                                                <span class="badge bg-success">{{ i.Room_Status }}</span>
+                                                {% elif i.Room_Status == 'Đã Đặt' %}
+                                                <span class="badge bg-danger">{{ i.Room_Status }}</span>
+                                                {% else %}
+                                                <span class="badge bg-warning">{{ i.Room_Status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if i.Room_Image %}
+                                                <img src="{{ i.Room_Image.url }}" alt="">
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ i.Date }}</td>
+                                            <td>{{ i.Time }}</td>
+                                            <td class="action">
+                                                <a href="{% url 'AllRooms_Delete' id=i.Id %}" class="js-room-delete"
+                                                    data-room-number="{{ i.Room_Number }}">Xóa</a>
+                                                <a href="{% url 'EditRooms' id=i.Id %}">Sửa</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="Grid_view">
+                        <div class="col-lg-12">
+                            <div class="allrooms-header">
+                                <h4>Danh sách tất cả phòng</h4>
+                                <a href="{% url 'Add_room' %}" class="allrooms-add-btn">
+                                    <i class="fas fa-plus"></i> Thêm mới
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <form method="post" action="{% url 'All_Room' %}">
+                                {% csrf_token %}
+                                <div class="allrooms-toolbar">
+                                    <div class="allrooms-toolbar__item">
+                                        <label for="display_count_grid">Hiển thị</label>
+                                        <input type="number" id="display_count_grid" name="display_count"
+                                            min="1" max="500" placeholder="Tất cả"
+                                            value="{{ display_count|default:'' }}">
+                                    </div>
+                                    <div class="allrooms-toolbar__item">
+                                        <input type="search" id="search_grid" name="search"
+                                            placeholder="Số phòng, loại, tầng..."
+                                            value="{{ search|default:'' }}">
+                                    </div>
+                                    <button type="submit" name="action" value="search"
+                                        class="allrooms-toolbar__btn">Tìm kiếm</button>
+                                    <button type="submit" name="action" value="all" formnovalidate
+                                        class="allrooms-toolbar__btn allrooms-toolbar__btn--secondary">Hiển thị tất cả</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-lg-12 table-wrapper-scroll-y my-custom-scrollbar Grid_view_pic">
+                            {% if data %}
+                            {% for i in data %}
+                            <div class="col-lg-4 Grid_view_pic_info">
+                                <div class="Grid_view_top">
+                                    <p>
+                                        <span class="hover_icon"><i class="fas fa-ellipsis-h"></i></span>
+                                        <div class="del_Edit">
+                                            <a href="{% url 'EditRooms' id=i.Id %}"><i class="fas fa-user-edit"></i></a>
+                                            <a href="{% url 'AllRooms_Delete' id=i.Id %}" class="js-room-delete"
+                                                data-room-number="{{ i.Room_Number }}"
+                                                title="Xóa phòng"><i class="fas fa-trash-alt"></i></a>
+                                        </div>
+                                    </p>
+                                    {% if i.Room_Image %}
+                                    <img src="{{ i.Room_Image.url }}" alt="img">
+                                    {% endif %}
+                                    <h4>{{ i.Room_Type|room_type_vi }}</h4>
+                                    <h6>{{ i.Room_Number }}</h6>
+                                </div>
+                                <div class="Grid_view_botton">
+                                    <div class="Grid_view_botton_info">
+                                        <h5>Tầng Phòng:</h5>
+                                        <p>{{ i.Room_Floor|room_floor_vi }}</p>
+                                    </div>
+                                    <div class="Grid_view_botton_info">
+                                        <h5>Giá Phòng:</h5>
+                                        <p>{{ i.Room_Price }}</p>
+                                    </div>
+                                    <div class="Grid_view_botton_info">
+                                        <h5>Date:</h5>
+                                        <p>{{ i.Date }}</p>
+                                    </div>
+                                    <div class="Grid_view_botton_info">
+                                        <h5>Tiện Nghi:</h5>
+                                        <p>{{ i.Room_Facility }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'admin/inc_room_confirm.html' %}
+{% endblock %}

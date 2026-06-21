@@ -1,250 +1,297 @@
-{%extends 'admin/AdminAllinclude.html'%}
+{% extends 'admin/AdminAllinclude.html' %}
 {% block title %}
- Add employee page
+Thêm nhân viên
 {% endblock %}
-  {% block  pagecontant %}
+{% block pagecontant %}
+{% load employee_tags %}
+{% include 'admin/inc_admin_panel_styles.html' %}
 
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-lg-12" style="background:gray;">
+            <div class="col-lg-6">
+                <div class="add_student">
+                    <h2>Thêm Nhân Viên</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="add_student_link">
+                    <a href="{% url 'Adminpage' %}">Trang Chủ</a>
+                    <i class="fas fa-angle-right"></i>
+                    <a href="{% url 'Allemployee' %}">Danh Sách Nhân Viên</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-         <!-- page content -->
-      <!--************************************
-			form part start
-		*************************************-->
+    <div class="row" style="margin-top:15px;">
+        <div class="col-lg-5">
+            <div class="addroom-panel addroom-panel--scroll">
+                <div class="allrooms-header">
+                    <h4>Thêm nhân viên mới</h4>
+                </div>
 
+                {% if error %}
+                <div class="addroom-alert">{{ error }}</div>
+                {% endif %}
 
-    <div class="right_col" role="main">
-        <div class="row">
-            <div class ="col-lg-12" style="background:gray;">
-                 <div class ="col-lg-6">
-                     <div class="add_student">
-                        <h2 >Add Employees</h2>
-                     </div>
-                 </div>
-                <div class ="col-lg-6">
-                    <div class="add_student_link">
-                        <a href="{% url 'Adminpage' %}">Home</a> <i class="fas fa-angle-right"></i> <a href="{% url 'Addemployee' %}">Add Employees</a>
-                     </div>
-                 </div>
+                <form method="post" action="{% url 'Addemployee' %}" enctype="multipart/form-data" class="addroom-form">
+                    {% csrf_token %}
+
+                    <div class="form-field-row">
+                        <label class="form-label">Mã NV</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Employee_Id" class="form-control" placeholder="VD: NV001" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Họ</label>
+                        <div class="form-field-control">
+                            <input type="text" name="First_Name" class="form-control" placeholder="Họ" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Tên</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Last_Name" class="form-control" placeholder="Tên" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Email</label>
+                        <div class="form-field-control">
+                            <input type="email" name="Email" class="form-control" placeholder="Email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Số điện thoại</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Mobile_Number" class="form-control" placeholder="Số điện thoại" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Ngày vào làm</label>
+                        <div class="form-field-control">
+                            <input type="date" name="Joining_Date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Ngày sinh</label>
+                        <div class="form-field-control">
+                            <input type="date" name="Dateof_Birth" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Phòng ban</label>
+                        <div class="form-field-control">
+                            <select class="form-control" name="Departments" required>
+                                <option value="">-- Chọn phòng ban --</option>
+                                {% for choice in department_choices %}
+                                <option value="{{ choice }}">{{ choice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Giới tính</label>
+                        <div class="form-field-control">
+                            <select class="form-control" name="Gender" required>
+                                <option value="">-- Chọn giới tính --</option>
+                                {% for choice in gender_choices %}
+                                <option value="{{ choice }}">{{ choice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Nhóm máu</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Blood_Group" class="form-control" placeholder="VD: O+" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Học vấn</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Education" class="form-control" placeholder="Học vấn" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">CMND/CCCD</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Personal_Identity" class="form-control" placeholder="Số CMND/CCCD" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Người giám hộ</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Guardian" class="form-control" placeholder="Tên người giám hộ" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">SĐT giám hộ</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Guardian_Number" class="form-control" placeholder="SĐT người giám hộ" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Ảnh</label>
+                        <div class="form-field-control">
+                            <div class="image-picker-row">
+                                <label class="image-picker-btn">
+                                    Chọn ảnh
+                                    <input type="file" name="Upload_Image" id="add_employee_image_input"
+                                        class="image-picker-input" accept="image/*" required>
+                                </label>
+                                <span class="image-picker-path" id="addEmployeeImagePath">Chưa chọn ảnh</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Địa chỉ</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Address" class="form-control" placeholder="Địa chỉ" required>
+                        </div>
+                    </div>
+
+                    <div class="addroom-form-actions">
+                        <button type="submit">Thêm</button>
+                        <button type="reset">Làm mới</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-          <div class="row" style="margin-top:15px; ">
-          <div class="col-lg-6" style="background: blue; ">
-           <div class="col-lg-12">
-               <div class="form_title">
-                   <h1>Manage Employee</h1>
-               </div>
-           </div>
-              <form method="post" action="Addemployee" enctype="multipart/form-data">
-                 {% csrf_token %}
-                  <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Employee Id</label>
-                      <input type="text" name="Employee_Id" class="form-control" placeholder="Employee Id" required>
-                  </div>
-              </div>
-              <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">First Name</label>
-                      <input type="text" name="First_Name" class="form-control" placeholder="First Name" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Last Name</label>
-                      <input type="text" name="Last_Name" class="form-control" placeholder="Last Name" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Email</label>
-                      <input type="email" name="Email" class="form-control" placeholder="Email" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Mobile Number</label>
-                      <input type="text" name="Mobile_Number" class="form-control" placeholder="Mobile Number" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Joining Date</label>
-                      <input type="date" name="Joining_Date " class="form-control" placeholder="Joining Date" required>
-                  </div>
-              </div>
-                  <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Date of Birth</label>
-                      <input type="date" name="Dateof_Birth" class="form-control" placeholder="Date of Birth" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Departments</label>
-                      <select class="form-control" name="Departments" required>
-                          <option value="Departments">Departments</option>
-                          <option value="Housekeeping">Housekeeping</option>
-                           <option value="Kitchen">Manager</option>
-                            <option value="Security">Chef</option>
-                          <option value="Food and Beverage">Food and Beverage</option>
-                          <option value="Kitchen">Kitchen</option>
-                          <option value="Security">Security</option>
-                           <option value="Security">transport</option>
-                      </select>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Gender</label>
-                      <select class="form-control" name="Gender" required>
-                          <option value="Gender">Gender</option>
-                          <option value="MALE">MALE</option>
-                          <option value="FEMALE">FEMALE</option>
-                      </select>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Blood Group</label>
-                      <input type="text" name="Blood_Group" class="form-control" placeholder="Blood Group" required>
-                  </div>
-              </div>
-                  <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Education</label>
-                      <input type="text" name="Education" class="form-control" placeholder="Education" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Personal Identity</label>
-                      <input type="text" name="Personal_Identity" class="form-control" placeholder="NID/Birth certificate Number" required>
-                  </div>
-              </div>
-                   <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Guardian</label>
-                      <input type="text" name="Guardian" class="form-control" placeholder="Guardian Name" required>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Guardian Number</label>
-                      <input type="text" name="Guardian_Number" class="form-control" placeholder="Guardian Number" required>
-                  </div>
-              </div>
-                   <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Upload Image</label>
-                      <input type="file" name="Upload_Image" class="form-control" placeholder="" required>
-                  </div>
-              </div>
-              <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Address</label>
-                      <input type="text" name="Address" class="form-control" placeholder="Address" required>
-                  </div>
-              </div>
-              <div class="col-lg-12">
-                  <div class="form_btn">
-                      <button type="submit">Add</button>
-                  </div>
-                   <div class="form_btn">
-                      <button type="reset">Clear</button>
-                  </div>
-              </div>
-                  </form>
-          </div>
-              <div class="col-lg-6 form_right" style="background: blue;">
-                  <div class="col-lg-12">
-                      <div class="form_right_info">
-                          <form method="post" action="Add_Employee_Search" enctype="multipart/form-data">
-                              {% csrf_token %}
-                              <div class="from_info1">
-                                   <div class="form-group">
-                                       <select class="form-control" name="departments" required>
-                                            <option value="Departments">Departments</option>
-                                            <option value="Housekeeping">Housekeeping</option>
-                                            <option value="Kitchen">Manager</option>
-                                            <option value="Security">Chef</option>
-                                            <option value="Food and Beverage">Food and Beverage</option>
-                                            <option value="Kitchen">Kitchen</option>
-                                            <option value="Security">Security</option>
-                                            <option value="Security">transport</option>
-                                       </select>
-                                     </div>
-                                  </div>
-                              <div class="from_info2">
-                                   <div class="form-group">
-                                       <input type="search" name="serch" class="form-control" placeholder="" required>
-                                   </div>
-                              </div>
-                              <div class="from_info3">
-                                    <div class="form_btn1">
-                                         <button type="submit">Search</button>
-                                     </div>
-                              </div>
-                              <div class="from_info4">
-                                    <div class="form_btn1">
-                                         <button type="submit">Show All</button>
-                                     </div>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-                  <div class="col-lg-12  form_table">
-                      <div id="example" class="example  table-wrapper-scroll-y my-custom-scrollbar">
-                        <table  class="table-bordered table-striped">
-                          <tr>
-                              <th>Employee Id</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Mobile Number</th>
-                            <th>Joining Date</th>
-                              <th>Date of Birth</th>
-                            <th>Departments</th>
-                            <th>Gender</th>
-                            <th>Blood Group</th>
-                              <th>Education</th>
-                            <th>Personal Identity</th>
-                               <th>Guardian Name</th>
-                            <th>Guardian Number</th>
-                              <th>Upload Image</th>
-                               <th>Address</th>
-                              <th>Action</th>
-                          </tr>
-                              {%if data %}
+        <div class="col-lg-7">
+            <div class="addroom-list-panel">
+                <div class="allrooms-header">
+                    <h4>Nhân viên vừa thêm</h4>
+                    <a href="{% url 'Allemployee' %}" class="allrooms-add-btn">
+                        <i class="fas fa-list"></i> Danh sách nhân viên
+                    </a>
+                </div>
 
-                                    {% for i in data %}
-                                     <tr>
-                                          <td>{{i.Employee_Id}}</td>
-                                          <td>{{i.First_Name}}</td>
-                                          <td>{{i.Last_Name}}</td>
-                                          <td>{{i.Email}}</td>
-                                          <td>{{i.Mobile_Number}}</td>
-                                          <td>{{i.Joining_Date }}</td>
-                                          <td>{{i.Dateof_Birth}}</td>
-                                          <td>{{i.Departments}}</td>
-                                          <td>{{i.Gender}}</td>
-                                          <td>{{i.Blood_Group}}</td>
-                                          <td>{{i.Education}}</td>
-                                          <td>{{i.Personal_Identity}}</td>
-                                          <td>{{i.Guardian}}</td>
-                                          <td>{{i.Guardian_Number}}</td>
-                                          <td>{{i.Upload_Image}}</td>
-                                          <td>{{i.Address}}</td>
-                                          <td class="action">
-                                                   <a  href="{% url 'AddEmplopage_Delete' id=i.Employee_Id%}">Delete</a>
-                                                   <a  href="{% url 'Editemployee' id=i.Employee_Id%}">Update</a>
-                                          </td>
-                                     </tr>
-                             {%endfor%}
-                                  {% endif %}
-                        </table>
-                    </div>
-                  </div>
-              </div>
+                <div class="allrooms-table-wrap table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table-bordered table-striped allrooms-table">
+                        <thead>
+                            <tr>
+                                <th>Mã NV</th>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>SĐT</th>
+                                <th>Phòng ban</th>
+                                <th>Giới tính</th>
+                                <th>Ảnh</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if data %}
+                            {% for i in data %}
+                            <tr>
+                                <td>{{ i.Employee_Id }}</td>
+                                <td>{{ i.First_Name }} {{ i.Last_Name }}</td>
+                                <td class="cell-ellipsis" title="{{ i.Email }}">{{ i.Email }}</td>
+                                <td>{{ i.Mobile_Number }}</td>
+                                <td>{{ i.Departments|department_vi }}</td>
+                                <td>{{ i.Gender|gender_vi }}</td>
+                                <td>
+                                    {% if i.Upload_Image %}
+                                    <img src="{{ i.Upload_Image.url }}" alt="">
+                                    {% endif %}
+                                </td>
+                                <td class="action">
+                                    <a href="{% url 'AddEmplopage_Delete' id=i.Employee_Id %}" class="js-employee-delete"
+                                        data-employee-name="{{ i.First_Name }} {{ i.Last_Name }}">Xóa</a>
+                                    <a href="{% url 'Editemployee' id=i.Employee_Id %}">Sửa</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
- {% endblock %}
+</div>
+
+<script>
+(function () {
+    var fileInput = document.getElementById('add_employee_image_input');
+    var pathDisplay = document.getElementById('addEmployeeImagePath');
+    var form = fileInput && fileInput.closest('form');
+    if (!fileInput || !pathDisplay) return;
+
+    var initialText = pathDisplay.textContent;
+
+    fileInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            pathDisplay.innerHTML = '<span class="image-picker-path--new">'
+                + this.files[0].name + '</span>';
+        } else {
+            pathDisplay.textContent = initialText;
+        }
+    });
+
+    if (form) {
+        form.addEventListener('reset', function () {
+            setTimeout(function () {
+                fileInput.value = '';
+                pathDisplay.textContent = initialText;
+            }, 0);
+        });
+
+        form.addEventListener('submit', function(e) {
+            var joiningDateInput = document.querySelector('input[name="Joining_Date"]');
+            var birthDateInput = document.querySelector('input[name="Dateof_Birth"]');
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (joiningDateInput && birthDateInput) {
+                var joiningDate = new Date(joiningDateInput.value);
+                var birthDate = new Date(birthDateInput.value);
+
+                if (!joiningDateInput.value || !birthDateInput.value) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ngày vào làm và ngày sinh');
+                    return;
+                }
+
+                if (birthDate >= today) {
+                    e.preventDefault();
+                    alert('Ngày sinh không được là ngày trong tương lai hoặc hôm nay');
+                    return;
+                }
+
+                if (joiningDate < today) {
+                    e.preventDefault();
+                    alert('Ngày vào làm không được là ngày trong quá khứ');
+                    return;
+                }
+
+                if (joiningDate <= birthDate) {
+                    e.preventDefault();
+                    alert('Ngày vào làm phải sau ngày sinh');
+                    return;
+                }
+            }
+        });
+    }
+})();
+</script>
+{% include 'admin/inc_room_confirm.html' %}
+{% endblock %}

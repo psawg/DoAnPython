@@ -176,6 +176,12 @@ urlpatterns = [
     ),
 
     path(
+        'Salary_Delete/<id>',
+        Salary_Delete,
+        name='Salary_Delete'
+    ),
+
+    path(
         'EmployeeShow',
         EmployeeShow,
         name='EmployeeShow'

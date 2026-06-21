@@ -1,190 +1,470 @@
-{%extends 'admin/AdminAllinclude.html'%}
+{% extends 'admin/AdminAllinclude.html' %}
 {% block title %}
- Add Customer page
+Thêm phòng
 {% endblock %}
-  {% block  pagecontant %}
+{% block pagecontant %}
+{% load room_tags %}
 
+<style>
+.allrooms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 12px;
+    padding: 0 4px;
+}
 
-         <!-- page content -->
-      <!--************************************
-			form part start
-		*************************************-->
+.allrooms-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ac3d19;
+}
 
+.allrooms-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0 !important;
+    padding: 8px 18px !important;
+    width: auto !important;
+    height: 36px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.2;
+    color: #fff !important;
+    background: #e53935 !important;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
 
-    <div class="right_col" role="main">
-        <div class="row">
-            <div class ="col-lg-12" style="background:gray;">
-                 <div class ="col-lg-6">
-                     <div class="add_student">
-                        <h2 >Add Rooms</h2>
-                     </div>
-                 </div>
-                <div class ="col-lg-6">
-                    <div class="add_student_link">
-                        <a href="{% url 'Adminpage' %}">Home</a> <i class="fas fa-angle-right"></i> <a href="{% url 'Add_room' %}">Add Rooms</a>
-                     </div>
-                 </div>
+.allrooms-add-btn:hover {
+    background: #c62828 !important;
+    color: #fff !important;
+}
+
+.addroom-panel {
+    background: #1565c0;
+    border-radius: 6px;
+    padding: 12px 14px 16px;
+    min-height: 100%;
+}
+
+.addroom-form .form-field-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.addroom-form .form-field-row .form-label {
+    flex: 0 0 130px;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: right;
+}
+
+.addroom-form .form-field-control {
+    flex: 1;
+    min-width: 0;
+}
+
+.addroom-form .form-control {
+    width: 100%;
+    height: 38px;
+    padding: 6px 12px;
+    font-size: 13px;
+    border: 1px solid #cfd8dc;
+    border-radius: 10px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.addroom-form .form-control:focus {
+    border-color: #64b5f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.35);
+}
+
+.addroom-form .image-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #cfd8dc;
+    border-radius: 10px;
+    padding: 4px 10px 4px 4px;
+    min-height: 38px;
+}
+
+.addroom-form .image-picker-btn {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #fff;
+    background: #546e7a;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.addroom-form .image-picker-btn:hover {
+    background: #455a64;
+}
+
+.addroom-form .image-picker-input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.addroom-form .image-picker-path {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.addroom-form .image-picker-path--new {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.addroom-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    padding-left: 142px;
+}
+
+.addroom-form-actions button {
+    flex: 1;
+    height: 38px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.addroom-form-actions button[type="submit"] {
+    background: #e53935;
+    color: #fff;
+}
+
+.addroom-form-actions button[type="submit"]:hover {
+    background: #c62828;
+}
+
+.addroom-form-actions button[type="reset"] {
+    background: #fff;
+    color: #333;
+}
+
+.addroom-list-panel {
+    background: #1565c0;
+    border-radius: 6px;
+    padding: 12px 14px 16px;
+    min-height: 100%;
+}
+
+.allrooms-table-wrap {
+    overflow-x: auto;
+    background: #1a1a1a;
+    border-radius: 6px;
+    padding: 4px;
+}
+
+.allrooms-table {
+    width: 100%;
+    margin: 0;
+    font-size: 12px;
+    text-align: center;
+    border-collapse: collapse;
+    color: #eee;
+}
+
+.allrooms-table th {
+    background: #c62828;
+    color: #fff;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.allrooms-table td {
+    padding: 5px 8px;
+    vertical-align: middle;
+    border-color: #333;
+}
+
+.allrooms-table tr:nth-child(even) {
+    background: #252525;
+}
+
+.allrooms-table tr:nth-child(odd) {
+    background: #1e1e1e;
+}
+
+.allrooms-table .facility-cell {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.allrooms-table img {
+    width: 48px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+.allrooms-table .action {
+    white-space: nowrap;
+}
+
+.allrooms-table .action a {
+    display: inline-block;
+    padding: 2px 8px;
+    margin: 0 2px;
+    font-size: 11px;
+    color: #fff;
+    background: #555;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+.allrooms-table .action a:hover {
+    background: #c62828;
+}
+
+.addroom-alert {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: #ffebee;
+    color: #c62828;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+</style>
+
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-lg-12" style="background:gray;">
+            <div class="col-lg-6">
+                <div class="add_student">
+                    <h2>Thêm Phòng</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="add_student_link">
+                    <a href="{% url 'Adminpage' %}">Trang Chủ</a>
+                    <i class="fas fa-angle-right"></i>
+                    <a href="{% url 'All_Room' %}">Danh Sách Phòng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:15px;">
+        <div class="col-lg-5">
+            <div class="addroom-panel">
+                <div class="allrooms-header">
+                    <h4>Thêm phòng mới</h4>
+                </div>
+
+                {% if error %}
+                <div class="addroom-alert">{{ error }}</div>
+                {% endif %}
+
+                <form method="post" action="{% url 'Add_room' %}" enctype="multipart/form-data" class="addroom-form">
+                    {% csrf_token %}
+
+                    <div class="form-field-row">
+                        <label class="form-label">Số Phòng</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Room_Number" class="form-control"
+                                placeholder="VD: 101, A-205" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Loại Phòng</label>
+                        <div class="form-field-control">
+                            <select class="form-control" name="Room_Type" required>
+                                <option value="">-- Chọn loại phòng --</option>
+                                {% for choice in room_type_choices %}
+                                <option value="{{ choice }}">{{ choice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Tầng Phòng</label>
+                        <div class="form-field-control">
+                            <select class="form-control" name="Room_Floor" required>
+                                <option value="">-- Chọn tầng --</option>
+                                {% for choice in room_floor_choices %}
+                                <option value="{{ choice }}">{{ choice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Tiện Nghi</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Room_Facility" class="form-control" placeholder="Tiện nghi" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Giá Phòng</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Room_Price" class="form-control" placeholder="Giá phòng" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Trạng Thái Phòng</label>
+                        <div class="form-field-control">
+                            <select class="form-control" name="Room_Status" required>
+                                <option value="Trống">Trống</option>
+                                <option value="Đã Đặt">Đã Đặt</option>
+                                <option value="Bảo Trì">Bảo Trì</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Ảnh Phòng</label>
+                        <div class="form-field-control">
+                            <div class="image-picker-row">
+                                <label class="image-picker-btn">
+                                    Chọn ảnh
+                                    <input type="file" name="Room_Image" id="add_room_image_input"
+                                        class="image-picker-input" accept="image/*" required>
+                                </label>
+                                <span class="image-picker-path" id="addRoomImagePath">Chưa chọn ảnh</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="addroom-form-actions">
+                        <button type="submit">Thêm</button>
+                        <button type="reset">Làm mới</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-          <div class="row" style="margin-top:15px; ">
-          <div class="col-lg-6" style="background: blue; ">
-           <div class="col-lg-12">
-               <div class="form_title">
-                   <h1>Manage Rooms</h1>
-               </div>
-           </div>
-              <form method="post" action="Add_room" enctype="multipart/form-data">
-                 {% csrf_token %}
+        <div class="col-lg-7">
+            <div class="addroom-list-panel">
+                <div class="allrooms-header">
+                    <h4>Phòng vừa thêm</h4>
+                    <a href="{% url 'All_Room' %}" class="allrooms-add-btn">
+                        <i class="fas fa-list"></i> Danh sách phòng
+                    </a>
+                </div>
 
-                        <div class="col-lg-12">
-                      <div class="form-group from_info">
-                          <label class="form-label">Room Number</label>
-                               <select class="form-control" name="Room_Number">
-                                     <option value="Room Number">Room Number</option>
-                                     <option value=" Room101">Room101</option>
-                                     <option value=" Room102">Room102</option>
-                                     <option value="Room103">Room103</option>
-                                     <option value="Room104">Room104</option>
-                               </select>
-                      </div>
-                  </div>
-                  <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Room Type</label>
-                           <select class="form-control" name="Room_Type">
-                                 <option value="Select Room">Select Room</option>
-                                 <option value=" Delux">Delux</option>
-                                 <option value=" Super Delux">Super Delux</option>
-                                 <option value=" Single">Single</option>
-                                 <option value=" Double">Double</option>
-                           </select>
-                  </div>
-              </div>
-
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Room Floor</label>
-                      <select class="form-control" name="Room_Floor" required>
-                          <option value="Room Floor">Room Floor</option>
-                          <option value="Floor_G">Floor_G</option>
-                          <option value="Floor_First">Floor_First</option>
-                           <option value="Floor_Second">Floor_Second</option>
-                           <option value="Floor_Thirt">Floor_Thirt</option>
-                      </select>
-                  </div>
-              </div>
-                <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Room Facility</label>
-                      <input type="text" name="Room_Facility" class="form-control" placeholder="Room Facility" required>
-                  </div>
-              </div>
-                  <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Room Price</label>
-                      <input type="text" name="Room_Price" class="form-control" placeholder="Room Price" required>
-                  </div>
-              </div>
-                   <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Room Image</label>
-                      <input type="file" name="Room_Image" class="form-control" placeholder="" required>
-                  </div>
-              </div>
-
-              <div class="col-lg-12">
-                  <div class="form_btn">
-                      <button type="submit">Add</button>
-                  </div>
-                   <div class="form_btn">
-                      <button type="reset">Clear</button>
-                  </div>
-              </div>
-                  </form>
-          </div>
-              <div class="col-lg-6 form_right" style="background: blue;">
-                  <div class="col-lg-12">
-                      <div class="form_right_info">
-                          <form method="post" action="Add_Room_Search" enctype="multipart/form-data">
-                              {% csrf_token %}
-                              <div class="from_info1">
-                                   <div class="form-group">
-                                       <select class="form-control" name="Room_Type">
-                                             <option value="Select Room">Select Room</option>
-                                             <option value=" Delux">Delux</option>
-                                             <option value=" Super Delux">Super Delux</option>
-                                             <option value=" Single">Single</option>
-                                             <option value=" Double">Double</option>
-                                        </select>
-                                     </div>
-                                  </div>
-                              <div class="from_info2">
-                                   <div class="form-group">
-                                       <input type="search" name="serch" class="form-control" placeholder="">
-                                   </div>
-                              </div>
-                              <div class="from_info3">
-                                    <div class="form_btn1">
-                                        <button type="submit"
-                                                name="action"
-                                                value="search">
-                                            Search
-                                        </button>
-                                     </div>
-                              </div>
-                              <div class="from_info4">
-                                    <div class="form_btn1">
-                                         <button type="submit">Show All</button><button type="submit"
-                                                name="action"
-                                                value="showall">
-                                            Show All
-                                        </button>
-                                     </div>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-                  <div class="col-lg-12  form_table">
-                      <div id="example" class="example  table-wrapper-scroll-y my-custom-scrollbar">
-                        <table  class="table-bordered table-striped">
-                          <tr>
-                              <th>Room Number</th>
-                              <th>Room Type</th>
-                            <th>Room Floor</th>
-                            <th>Room Facility</th>
-                            <th>Room Price</th>
-                            <th>Room Image</th>
-                               <th>Date</th>
-                               <th>Time</th>
-                               <th>Action</th>
-                          </tr>
-                             {%if data %}
-
-                                    {% for i in data %}
-
-                                     <tr>
-                                          <td>{{i.Room_Number}}</td>
-                                          <td>{{i.Room_Type}}</td>
-                                          <td>{{i.Room_Floor}}</td>
-                                          <td>{{i.Room_Facility}}</td>
-                                          <td>{{i.Room_Price}}</td>
-                                          <td>{{i.Room_Image}}</td>
-                                          <td>{{i.Date}}</td>
-                                          <td>{{i.Time}}</td>
-                                          <td class="action">
-                                                   <a  href="{% url 'AddRooms_Delete' id=i.Id%}">Delete</a>
-                                                   <a  href="{% url 'EditRooms' id=i.Id%}">Update</a>
-                                          </td>
-                                     </tr>
-                             {%endfor%}
-
-                                  {% endif %}
-
-                        </table>
-                    </div>
-                  </div>
-              </div>
+                <div class="allrooms-table-wrap table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table-bordered table-striped allrooms-table">
+                        <thead>
+                            <tr>
+                                <th>Số Phòng</th>
+                                <th>Loại</th>
+                                <th>Tầng</th>
+                                <th>Tiện nghi</th>
+                                <th>Giá</th>
+                                <th>Ảnh</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày</th>
+                                <th>Giờ</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if data %}
+                            {% for i in data %}
+                            <tr>
+                                <td>{{ i.Room_Number }}</td>
+                                <td>{{ i.Room_Type|room_type_vi }}</td>
+                                <td>{{ i.Room_Floor|room_floor_vi }}</td>
+                                <td class="facility-cell" title="{{ i.Room_Facility }}">{{ i.Room_Facility }}</td>
+                                <td>{{ i.Room_Price }}</td>
+                                <td>
+                                    {% if i.Room_Image %}
+                                    <img src="{{ i.Room_Image.url }}" alt="">
+                                    {% endif %}
+                                </td>
+                                <td>{{ i.Room_Status }}</td>
+                                <td>{{ i.Date }}</td>
+                                <td>{{ i.Time }}</td>
+                                <td class="action">
+                                    <a href="{% url 'AddRooms_Delete' id=i.Id %}" class="js-room-delete"
+                                        data-room-number="{{ i.Room_Number }}">Xóa</a>
+                                    <a href="{% url 'EditRooms' id=i.Id %}">Sửa</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
- {% endblock %}
+</div>
+
+<script>
+(function () {
+    var fileInput = document.getElementById('add_room_image_input');
+    var pathDisplay = document.getElementById('addRoomImagePath');
+    var form = fileInput && fileInput.closest('form');
+    if (!fileInput || !pathDisplay) return;
+
+    var initialText = pathDisplay.textContent;
+
+    fileInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            pathDisplay.innerHTML = '<span class="image-picker-path--new">'
+                + this.files[0].name + '</span>';
+        } else {
+            pathDisplay.textContent = initialText;
+        }
+    });
+
+    if (form) {
+        form.addEventListener('reset', function () {
+            setTimeout(function () {
+                fileInput.value = '';
+                pathDisplay.textContent = initialText;
+            }, 0);
+        });
+    }
+})();
+</script>
+{% include 'admin/inc_room_confirm.html' %}
+{% endblock %}

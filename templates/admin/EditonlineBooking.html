@@ -39,11 +39,11 @@
                               </div>
                               <div class="form-group edit_form">
                                   <label class="form-label">Check in</label>
-                                <input type="text"  name="Check_in" class="form-control" value={{data.Check_in}}>
+                                <input type="date"  name="Check_in" class="form-control" value={{data.Check_in}}>
                               </div>
                                <div class="form-group edit_form">
                                   <label class="form-label">Check out</label>
-                                <input type="text"  name="Check_out" class="form-control" value={{data.Check_out}}>
+                                <input type="date"  name="Check_out" class="form-control" value={{data.Check_out}}>
                               </div>
                                <div class="form-group edit_form">
                                   <label class="form-label">Adult</label>
@@ -113,5 +113,40 @@
         </div>
     </div>
 
+    <script>
+    (function() {
+        var form = document.querySelector('.edit_stu_form form');
+        var checkInInput = document.querySelector('input[name="Check_in"]');
+        var checkOutInput = document.querySelector('input[name="Check_out"]');
+
+        if (form && checkInInput && checkOutInput) {
+            form.addEventListener('submit', function(e) {
+                var checkInDate = new Date(checkInInput.value);
+                var checkOutDate = new Date(checkOutInput.value);
+
+                if (!checkInInput.value || !checkOutInput.value) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ngày Check-in và Check-out');
+                    return;
+                }
+
+                if (checkOutDate <= checkInDate) {
+                    e.preventDefault();
+                    alert('Ngày Check-out phải sau ngày Check-in');
+                    return;
+                }
+            });
+
+            checkInInput.addEventListener('change', function() {
+                var checkInDate = new Date(this.value);
+                if (checkInDate) {
+                    var nextDay = new Date(checkInDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    checkOutInput.min = nextDay.toISOString().split('T')[0];
+                }
+            });
+        }
+    })();
+    </script>
 
    {% endblock %}

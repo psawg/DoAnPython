@@ -1,176 +1,256 @@
-{%extends 'admin/AdminAllinclude.html'%}
+{% extends 'admin/AdminAllinclude.html' %}
 {% block title %}
- Add Salary page
+Thêm lương nhân viên
 {% endblock %}
-  {% block  pagecontant %}
+{% block pagecontant %}
+{% load employee_tags %}
+{% include 'admin/inc_admin_panel_styles.html' %}
 
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-lg-12" style="background:gray;">
+            <div class="col-lg-6">
+                <div class="add_student">
+                    <h2>Thêm Lương Nhân Viên</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="add_student_link">
+                    <a href="{% url 'Adminpage' %}">Trang Chủ</a>
+                    <i class="fas fa-angle-right"></i>
+                    <a href="{% url 'Allemployee' %}">Danh Sách Nhân Viên</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-         <!-- page content -->
-      <!--************************************
-			form part start
-		*************************************-->
+    <div class="row" style="margin-top:15px;">
+        <div class="col-lg-5">
+            <div class="addroom-panel">
+                <div class="allrooms-header">
+                    <h4>Thêm lương mới</h4>
+                </div>
 
+                {% if error %}
+                <div class="addroom-alert">{{ error }}</div>
+                {% endif %}
 
-    <div class="right_col" role="main">
-        <div class="row">
-            <div class ="col-lg-12" style="background:gray;">
-                 <div class ="col-lg-6">
-                     <div class="add_student">
-                        <h2 >Add Salary</h2>
-                     </div>
-                 </div>
-                <div class ="col-lg-6">
-                    <div class="add_student_link">
-                        <a href="{% url 'Adminpage' %}">Home</a> <i class="fas fa-angle-right"></i> <a href="{% url 'AddEmployeeSalary' %}">Add Salary</a>
-                     </div>
-                 </div>
+                <form method="post" action="{% url 'AddEmployeeSalary' %}" class="addroom-form">
+                    {% csrf_token %}
+
+                    <div class="form-field-row">
+                        <label class="form-label">Nhân viên</label>
+                        <div class="form-field-control">
+                            <input type="text" class="form-control" name="Employee_Id" id="salary_employee_input"
+                                placeholder="Nhập mã NV hoặc tên nhân viên" list="employee_datalist" required autocomplete="off">
+                            <datalist id="employee_datalist">
+                                {% for emp in employees %}
+                                <option value="{{ emp.Employee_Id }}"
+                                    data-name="{{ emp.First_Name }} {{ emp.Last_Name }}"
+                                    data-email="{{ emp.Email }}"
+                                    data-mobile="{{ emp.Mobile_Number }}"
+                                    data-dept="{{ emp.Departments|department_vi }}">
+                                    {{ emp.Employee_Id }} — {{ emp.First_Name }} {{ emp.Last_Name }}
+                                </option>
+                                <option value="{{ emp.First_Name }} {{ emp.Last_Name }}"
+                                    data-id="{{ emp.Employee_Id }}"
+                                    data-email="{{ emp.Email }}"
+                                    data-mobile="{{ emp.Mobile_Number }}"
+                                    data-dept="{{ emp.Departments|department_vi }}">
+                                    {{ emp.Employee_Id }} — {{ emp.First_Name }} {{ emp.Last_Name }}
+                                </option>
+                                {% endfor %}
+                            </datalist>
+                            <input type="hidden" name="Employee_Id_Selected" id="salary_employee_id_hidden">
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Họ tên</label>
+                        <div class="form-field-control">
+                            <input type="text" id="salary_employee_name" class="form-control" readonly
+                                placeholder="Chọn nhân viên để hiển thị">
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Email</label>
+                        <div class="form-field-control">
+                            <input type="text" id="salary_employee_email" class="form-control" readonly
+                                placeholder="Chọn nhân viên để hiển thị">
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Số điện thoại</label>
+                        <div class="form-field-control">
+                            <input type="text" id="salary_employee_mobile" class="form-control" readonly
+                                placeholder="Chọn nhân viên để hiển thị">
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Phòng ban</label>
+                        <div class="form-field-control">
+                            <input type="text" id="salary_employee_dept" class="form-control" readonly
+                                placeholder="Chọn nhân viên để hiển thị">
+                        </div>
+                    </div>
+
+                    <div class="form-field-row">
+                        <label class="form-label">Mức lương</label>
+                        <div class="form-field-control">
+                            <input type="text" name="Salary" class="form-control"
+                                placeholder="VD: 8000000" required>
+                        </div>
+                    </div>
+
+                    <div class="addroom-form-actions">
+                        <button type="submit">Thêm</button>
+                        <button type="reset">Làm mới</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-          <div class="row" style="margin-top:15px; ">
-          <div class="col-lg-6" style="background: blue; ">
-           <div class="col-lg-12">
-               <div class="form_title">
-                   <h1>Manage Salary</h1>
-               </div>
-           </div>
-              <form method="post" action="" enctype="multipart/form-data">
-                 {% csrf_token %}
-                   <div class="col-lg-12">
-                      <div class="form-group from_info">
-                          <label class="form-label">Employee Id</label>
-                          <input type="text" name="Employee_Id" class="form-control" placeholder="Employee Id" required>
-                      </div>
-                   </div>
-                  <div class="col-lg-12">
-                      <div class="form-group from_info">
-                          <label class="form-label">Employee Name</label>
-                          <input type="text" name="Employee_Name" class="form-control" placeholder="Employee Name" required>
-                      </div>
-                   </div>
-                    <div class="col-lg-12">
-                      <div class="form-group from_info">
-                          <label class="form-label">Mobile Number</label>
-                          <input type="text" name="Mobile_Number" class="form-control" placeholder="Mobile Number" required>
-                      </div>
-                   </div>
-                  <div class="col-lg-12">
-                      <div class="form-group from_info">
-                          <label class="form-label">Email</label>
-                          <input type="text" name="Email" class="form-control" placeholder="Email" required>
-                      </div>
-                   </div>
+        <div class="col-lg-7">
+            <div class="addroom-list-panel">
+                <div class="allrooms-header">
+                    <h4>Bảng lương đã thêm</h4>
+                    <a href="{% url 'Allemployee' %}" class="allrooms-add-btn">
+                        <i class="fas fa-list"></i> Danh sách nhân viên
+                    </a>
+                </div>
 
-                        <div class="col-lg-12">
-                      <div class="form-group from_info">
-                          <label class="form-label">Departments</label>
-                              <select class="form-control" name="Departments" required>
-                                            <option value="Departments">Departments</option>
-                                            <option value="Housekeeping">Housekeeping</option>
-                                            <option value="Kitchen">Manager</option>
-                                            <option value="Security">Chef</option>
-                                            <option value="Food and Beverage">Food and Beverage</option>
-                                            <option value="Kitchen">Kitchen</option>
-                                            <option value="Security">Security</option>
-                                            <option value="Security">transport</option>
-                              </select>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-12">
-                  <div class="form-group from_info">
-                      <label class="form-label">Salary</label>
-                      <input type="text" name="Salary" class="form-control" placeholder="Salary" required>
-                  </div>
-              </div>
-
-              <div class="col-lg-12">
-                  <div class="form_btn">
-                      <button type="submit">Add</button>
-                  </div>
-                   <div class="form_btn">
-                      <button type="reset">Clear</button>
-                  </div>
-              </div>
-                  </form>
-          </div>
-              <div class="col-lg-6 form_right" style="background: blue;">
-                  <div class="col-lg-12">
-                      <div class="form_right_info">
-                          <form method="post" action="#" enctype="multipart/form-data">
-                              {% csrf_token %}
-                              <div class="from_info1">
-                                   <div class="form-group">
-                                      <select class="form-control" name="departments" required>
-                                            <option value="Departments">Departments</option>
-                                            <option value="Housekeeping">Housekeeping</option>
-                                            <option value="Kitchen">Manager</option>
-                                            <option value="Security">Chef</option>
-                                            <option value="Food and Beverage">Food and Beverage</option>
-                                            <option value="Kitchen">Kitchen</option>
-                                            <option value="Security">Security</option>
-                                            <option value="Security">transport</option>
-                                      </select>
-                                     </div>
-                                  </div>
-                              <div class="from_info2">
-                                   <div class="form-group">
-                                       <input type="search" name="serch" class="form-control" placeholder="" required>
-                                   </div>
-                              </div>
-                              <div class="from_info3">
-                                    <div class="form_btn1">
-                                         <button type="submit">Search</button>
-                                     </div>
-                              </div>
-                              <div class="from_info4">
-                                    <div class="form_btn1">
-                                         <button type="submit">Show All</button>
-                                     </div>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-                  <div class="col-lg-12  form_table">
-                      <div id="example" class="example  table-wrapper-scroll-y my-custom-scrollbar">
-                        <table  class="table-bordered table-striped">
-                          <tr>
-                              <th>Employee Id</th>
-                              <th>Employee Name</th>
-                              <th>Mobile Number</th>
-                              <th>Email</th>
-                               <th>Departments</th>
-                               <th>Salary</th>
-                               <th>Date</th>
-                               <th>Time</th>
-                               <th>Action</th>
-                          </tr>
-                             {%if data %}
-
-                                    {% for i in data %}
-
-                                     <tr>
-                                          <td>{{i.Employee_Id}}</td>
-                                          <td>{{i.Employee_Name}}</td>
-                                          <td>{{i.Mobile_Number}}</td>
-                                          <td>{{i.Email}}</td>
-                                          <td>{{i.Departments}}</td>
-                                          <td>{{i.Salary}}</td>
-                                          <td>{{i.Date}}</td>
-                                          <td>{{i.Time}}</td>
-                                          <td class="action">
-                                                   <a  href="{% url 'AddRooms_Delete' id=i.Id%}">Delete</a>
-                                                   <a  href="{% url 'EditRooms' id=i.Id%}">Update</a>
-                                          </td>
-                                     </tr>
-                             {%endfor%}
-
-                                  {% endif %}
-
-                        </table>
-                    </div>
-                  </div>
-              </div>
+                <div class="allrooms-table-wrap table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table-bordered table-striped allrooms-table">
+                        <thead>
+                            <tr>
+                                <th>Mã NV</th>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>SĐT</th>
+                                <th>Phòng ban</th>
+                                <th>Lương</th>
+                                <th>Ngày</th>
+                                <th>Giờ</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if data %}
+                            {% for i in data %}
+                            <tr>
+                                <td>{{ i.Employee_Id.Employee_Id }}</td>
+                                <td>{{ i.Employee_Name }}</td>
+                                <td class="cell-ellipsis" title="{{ i.Email }}">{{ i.Email }}</td>
+                                <td>{{ i.Mobile_Number }}</td>
+                                <td>{{ i.Departments|department_vi }}</td>
+                                <td>{{ i.Salary }}</td>
+                                <td>{{ i.Date }}</td>
+                                <td>{{ i.Time }}</td>
+                                <td class="action">
+                                    <a href="{% url 'Salary_Delete' id=i.id %}" class="js-salary-delete"
+                                        data-employee-name="{{ i.Employee_Name }}">Xóa</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
- {% endblock %}
+</div>
+
+<script>
+(function () {
+    var input = document.getElementById('salary_employee_input');
+    var datalist = document.getElementById('employee_datalist');
+    var hiddenInput = document.getElementById('salary_employee_id_hidden');
+    var nameInput = document.getElementById('salary_employee_name');
+    var emailInput = document.getElementById('salary_employee_email');
+    var mobileInput = document.getElementById('salary_employee_mobile');
+    var deptInput = document.getElementById('salary_employee_dept');
+    var form = input && input.closest('form');
+
+    function fillEmployeeFields(employeeId) {
+        var options = datalist.querySelectorAll('option');
+        var selectedOption = null;
+
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+            var optionValue = option.value.trim();
+            var optionId = option.getAttribute('data-id');
+
+            if (optionValue === employeeId || optionId === employeeId) {
+                selectedOption = option;
+                break;
+            }
+        }
+
+        if (!selectedOption) {
+            nameInput.value = '';
+            emailInput.value = '';
+            mobileInput.value = '';
+            deptInput.value = '';
+            hiddenInput.value = '';
+            return;
+        }
+
+        var actualEmployeeId = selectedOption.getAttribute('data-id') || selectedOption.value;
+        hiddenInput.value = actualEmployeeId;
+        nameInput.value = selectedOption.getAttribute('data-name') || '';
+        emailInput.value = selectedOption.getAttribute('data-email') || '';
+        mobileInput.value = selectedOption.getAttribute('data-mobile') || '';
+        deptInput.value = selectedOption.getAttribute('data-dept') || '';
+    }
+
+    if (input) {
+        input.addEventListener('input', function() {
+            var inputValue = this.value.trim();
+            if (inputValue) {
+                fillEmployeeFields(inputValue);
+            } else {
+                nameInput.value = '';
+                emailInput.value = '';
+                mobileInput.value = '';
+                deptInput.value = '';
+                hiddenInput.value = '';
+            }
+        });
+
+        input.addEventListener('change', function() {
+            var inputValue = this.value.trim();
+            if (inputValue) {
+                fillEmployeeFields(inputValue);
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!hiddenInput.value && input.value) {
+                fillEmployeeFields(input.value.trim());
+                if (!hiddenInput.value) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn nhân viên hợp lệ từ danh sách');
+                }
+            }
+        });
+
+        form.addEventListener('reset', function () {
+            setTimeout(function () {
+                nameInput.value = '';
+                emailInput.value = '';
+                mobileInput.value = '';
+                deptInput.value = '';
+                hiddenInput.value = '';
+            }, 0);
+        });
+    }
+})();
+</script>
+{% include 'admin/inc_room_confirm.html' %}
+{% endblock %}

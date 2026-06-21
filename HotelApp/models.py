@@ -8,6 +8,10 @@ class Authorregis(models.Model):
     Email = models.CharField(max_length=255,unique=True)
     Phone_Number = models.IntegerField()
     Password = models.CharField(max_length=255)
+    Role = models.CharField(
+        max_length=20,
+        default='user'
+    )
     Date = models.DateField(auto_now_add=True)
     Time = models.TimeField(auto_now_add=True)
     def __str__(self):

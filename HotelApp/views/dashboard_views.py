@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
 from HotelApp import models
 
@@ -16,14 +17,23 @@ def all_admin(request):
 
 
 def Admin(request):
+
+    role = request.session.get('role')
+
+    if role not in ['admin', 'employee']:
+        return redirect('Aothur_login')
+
     data = models.Online_Booking.objects.all().order_by('-Id')
 
     return render(
         request,
         'admin/Admin.html',
-        {'data': data}
+        {
+            'data': data,
+            'username': request.session.get('user_name'),
+            'role': role
+        }
     )
-
 
 def EmployeeShow(request):
     return render(request, 'admin/EmployeeShow.html')

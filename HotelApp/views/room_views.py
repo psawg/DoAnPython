@@ -49,24 +49,29 @@ def Add_room(request):
 
 def Add_Room_Search(request):
     if request.method == 'POST':
+
+        action = request.POST.get('action')
         search = request.POST.get('serch')
 
-        data = (
-            models.Add_Room.objects.filter(
-                Room_Number=search
-            )
-            or
-            models.Add_Room.objects.filter(
-                Room_Type=search
-            )
-        )
+        if action == 'showall':
+            data = models.Add_Room.objects.all().order_by('-Id')
+
+        else:
+            data = (
+                models.Add_Room.objects.filter(
+                    Room_Number=search
+                )
+                or
+                models.Add_Room.objects.filter(
+                    Room_Type=search
+                )
+            ) 
 
         return render(
             request,
             'admin/AddRoom.html',
-            {"data": data}
+            {'data': data}
         )
-
 
 def AddRooms_Delete(request, id):
     data = models.Add_Room.objects.get(Id=id)

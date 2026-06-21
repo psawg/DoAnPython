@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
+from HotelApp.views.auth_views import is_admin
 from HotelApp import models
 from HotelApp.forms import (
     Add_Employee_form,

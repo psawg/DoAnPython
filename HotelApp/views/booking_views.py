@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.db.models import Q
 
 from HotelApp import models
 from HotelApp.forms import (
@@ -37,31 +38,58 @@ def OnlineBooking(request):
 
     return render(request, 'online_booking_page.html')
 
-
 def online_Booking_info(request):
-    if request.method == 'POST':
-        search = request.POST.get('search')
 
-        show = (
-            models.Online_Booking.objects.filter(Country=search)
-            or
-            models.Online_Booking.objects.filter(Name=search)
+    # Khi click menu Online Booking
+    if request.method == 'GET':
+
+        data = models.Online_Booking.objects.all().order_by('-Id')
+
+        return render(
+            request,
+            'admin/Online_Booking.html',
+            {'data': data}
+        )
+
+    # POST
+    action = request.POST.get('action')
+    search = request.POST.get('search')
+
+    if action == 'showall':
+
+        data = models.Online_Booking.objects.all().order_by('-Id')
+
+        return render(
+            request,
+            'admin/Online_Booking.html',
+            {'data': data}
+        )
+
+    if action == 'search':
+
+        if not search:
+
+            data = models.Online_Booking.objects.all().order_by('-Id')
+
+            return render(
+                request,
+                'admin/Online_Booking.html',
+                {
+                    'data': data,
+                    'error': 'Vui lòng nhập từ khóa tìm kiếm'
+                }
+            )
+
+        show = models.Online_Booking.objects.filter(
+            Q(Country__icontains=search) |
+            Q(Name__icontains=search)
         )
 
         return render(
             request,
             'admin/Online_Booking.html',
-            {"data": show}
+            {'data': show}
         )
-
-    data = models.Online_Booking.objects.all().order_by('-Id')
-
-    return render(
-        request,
-        'admin/Online_Booking.html',
-        {'data': data}
-    )
-
 
 def Edit_online_Booking(request, id):
     data = models.Online_Booking.objects.get(Id=id)

@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
-
+from django.shortcuts import render
 from HotelApp import models
 from HotelApp.forms import Add_Room_form
 from HotelApp.room_display import ROOM_FLOOR_CHOICES, ROOM_TYPE_CHOICES
-
+from django.http import JsonResponse
 
 def _room_form_context(**extra):
     context = {
@@ -279,3 +279,29 @@ def AllRooms_Delete(request, id):
     data.delete()
 
     return redirect('All_Room')
+
+
+def check_availability(request):
+
+    rooms = models.Add_Room.objects.all().order_by('Room_Number')
+
+    return render(
+        request,
+        'room_rows.html',
+        {
+            'rooms': rooms
+        }
+    )
+
+
+def room_detail_api(request, room_id):
+
+    room = models.Add_Room.objects.get(Id=room_id)
+
+    return JsonResponse({
+        'room_number': room.Room_Number,
+        'room_type': room.Room_Type,
+        'room_floor': room.Room_Floor,
+        'room_price': room.Room_Price,
+        'room_image': room.Room_Image.url
+    })

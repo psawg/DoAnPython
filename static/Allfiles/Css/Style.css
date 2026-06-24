@@ -1,36 +1,4 @@
-/*-----------------------------------------------------------------------------------
-    
-    Template Name: Hotel and Resort
-    Template URI: 
-    Description: This is html5 template
-    Author: Md.Minhajur Rahman
-    Author URI: 
-    Author Email:
-    Version: 1.0
-    
------------------------------------------------------------------------------------
-    
-    CSS INDEX
-    ===================
-	
-    1.Header Part
-    2. 
-    3. 
-    4. 
-    5. 
-    6. 
-    7. 
-    8. 
-    9. 
-    10. 
-    11. 
-    12. 
-    
 
------------------------------------------------------------------------------------*/
-/*************************
-    General
-*************************/
 :root{
     --titlecolor:#000;
     --imgbg:#323232;
@@ -738,7 +706,7 @@ h2 {
      height: 100%;
      background: rgba(0, 0, 0, 0.2);
 }
-.btn{
+.room_btn{
     position: absolute;
     top:80%;
     left:28%;
@@ -1918,3 +1886,29 @@ Counter Part CSS
     color: var(--maincolor);
 }
 
+/* Available Rooms */
+
+.room-modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.7);
+}
+
+.room-modal-content{
+    background:#fff;
+    width:80%;
+    margin:80px auto;
+    padding:20px;
+    border-radius:10px;
+}
+
+.room-close{
+    float:right;
+    font-size:30px;
+    cursor:pointer;
+}

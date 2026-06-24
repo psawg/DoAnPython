@@ -1,0 +1,15 @@
+{% for room in rooms %}
+<tr>
+    <td>{{ room.Room_Number }}</td>
+    <td>{{ room.Room_Type }}</td>
+    <td>{{ room.Room_Floor }}</td>
+    <td>${{ room.Room_Price }}</td>
+
+    <td>
+        <a href="{% url 'OnlineBooking' %}?room_id={{ room.Id }}"
+           class="btn btn-success">
+            Book Now
+        </a>
+    </td>
+</tr>
+{% endfor %}

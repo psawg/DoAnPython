@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('HotelApp', '0007_add_salarys'),
+        ('HotelApp', '0008_authorregis_role'),
     ]
 
     operations = [

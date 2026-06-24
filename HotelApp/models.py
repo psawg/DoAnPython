@@ -21,6 +21,11 @@ class Authorregis(models.Model):
 
 class Online_Booking(models.Model):
     Id = models.AutoField(primary_key=True)
+    Room_Number = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
     Check_in = models.CharField(max_length=255)
     Check_out = models.CharField(max_length=255)
     ADULT = models.CharField(max_length=255)
@@ -39,7 +44,7 @@ class Online_Booking(models.Model):
     def __str__(self):
         return self.Name
     class Meta:
-        db_table = 'Online_Booking_table'
+        db_table = 'HotelApp_online_booking'
 
 class Offline_Booking(models.Model):
     Customer_Id = models.AutoField(primary_key=True)

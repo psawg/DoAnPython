@@ -186,4 +186,16 @@ urlpatterns = [
         EmployeeShow,
         name='EmployeeShow'
     ),
+
+    path(
+        'check-availability/',
+        room_views.check_availability,
+        name='check_availability'
+    ),
+
+    path(
+        'room-detail-api/<int:room_id>/',
+        room_views.room_detail_api,
+        name='room_detail_api'
+    ),
 ]

@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Q
-
+from django.http import JsonResponse
 from HotelApp import models
 from HotelApp.forms import (
     Online_Booking_form,
@@ -11,11 +11,18 @@ from HotelApp.forms import (
 
 def OnlineBooking(request):
     if request.method == 'POST':
+        room_id = request.GET.get('room_id')
+
+        room = models.Add_Room.objects.get(
+            Id=room_id
+        )
+        print("ROOM:", room.Room_Number)
         upload_image = request.FILES.get('Img')
 
         MyData = models.Online_Booking()
 
         MyData.Id = request.POST.get('Id')
+        MyData.Room_Number = request.POST.get('Room_Number')
         MyData.Check_in = request.POST.get('Check_in')
         MyData.Check_out = request.POST.get('Check_out')
         MyData.ADULT = request.POST.get('ADULT')
@@ -33,7 +40,11 @@ def OnlineBooking(request):
         MyData.Time = request.POST.get('Time')
 
         MyData.save()
-
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Booking Successfully'
+        })
         return HttpResponse('Booking Successfully')
 
     return render(request, 'online_booking_page.html')

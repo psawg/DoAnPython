@@ -5044,4 +5044,4 @@ $(document).ready(function () {
 
 });
 
-
+console.log("CUSTOM JS LOADED");
